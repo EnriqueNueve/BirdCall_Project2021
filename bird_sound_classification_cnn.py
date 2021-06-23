@@ -1,25 +1,11 @@
-# # Import Comet and create experiment
-# from comet_ml import Experiment
-#
-# # Comet variables
-# API_KEY = "<HIDDEN>"
-# PROJECT = "urbansound8k"
-# WORKSPACE = "demo"
-#
-# experiment = Experiment(api_key=API_KEY,
-#                         project_name=PROJECT, workspace=WORKSPACE)
-
-#### Dependencies ####
 import IPython.display as ipd
 import numpy as np
 import pandas as pd
 import librosa
 import librosa.display
 import matplotlib
-
 matplotlib.use('agg')
 import matplotlib.pyplot as plt
-# import struct
 from scipy.io import wavfile as wav
 import os
 from datetime import datetime
