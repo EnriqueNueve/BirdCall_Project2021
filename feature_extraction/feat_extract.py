@@ -57,6 +57,7 @@ def extract_feature(file_name=None):
     oenv = librosa.onset.onset_strength(y=X, sr=sample_rate, hop_length=hop_length)
     fourier_tempograms = librosa.feature.fourier_tempogram(onset_envelope=oenv, sr=sample_rate,
                                                            hop_length=hop_length)
+    fourier_tempograms = fourier_tempograms.real
     fourier_tempogram = np.mean(fourier_tempograms.T, axis=0)
 
     return mfccs,chroma,mel,contrast,fourier_tempogram
