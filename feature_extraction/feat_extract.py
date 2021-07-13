@@ -47,25 +47,32 @@ def extract_feature(file_name=None):
     tonnetz = np.mean(librosa.feature.tonnetz(y=librosa.effects.harmonic(X), sr=sample_rate).T,axis=0)
 
     # tempogram
-    # hop_length = 512
-    # oenv = librosa.onset.onset_strength(y=X, sr=sample_rate, hop_length=hop_length)
-    # tempograms = librosa.feature.tempogram(onset_envelope=oenv, sr=sample_rate, hop_length=hop_length)
-    # tempogram = np.mean(tempograms.T, axis=0)
+    hop_length = 512
+    oenv = librosa.onset.onset_strength(y=X, sr=sample_rate, hop_length=hop_length)
+    tempograms = librosa.feature.tempogram(onset_envelope=oenv, sr=sample_rate, hop_length=hop_length)
+    tempogram = np.mean(tempograms.T, axis=0)
 
-    return mfccs,chroma,mel,contrast,tonnetz
+    # fourier_tempogram
+    hop_length = 512
+    oenv = librosa.onset.onset_strength(y=X, sr=sample_rate, hop_length=hop_length)
+    fourier_tempograms = librosa.feature.fourier_tempogram(onset_envelope=oenv, sr=sample_rate,
+                                                           hop_length=hop_length)
+    fourier_tempogram = np.mean(fourier_tempograms.T, axis=0)
+
+    return mfccs,chroma,mel,contrast,fourier_tempogram
 
 def parse_audio_files(parent_dir,file_ext='*.ogg'):
     sub_dirs = os.listdir(parent_dir)
     sub_dirs.sort()
-    features, labels = np.empty((0,193)), np.empty(0)
+    features, labels = np.empty((0,380)), np.empty(0)
     for label, sub_dir in enumerate(sub_dirs):
         if os.path.isdir(os.path.join(parent_dir, sub_dir)):
             for fn in glob.glob(os.path.join(parent_dir, sub_dir, file_ext)):
-                try: mfccs, chroma, mel, contrast, tonnetz = extract_feature(fn)
+                try: mfccs, chroma, mel, contrast, fourier_tempogram = extract_feature(fn)
                 except Exception as e:
                     print("[Error] extract feature error in %s. %s" % (fn,e))
                     continue
-                ext_features = np.hstack([mfccs,chroma,mel,contrast,tonnetz])
+                ext_features = np.hstack([mfccs,chroma,mel,contrast,fourier_tempogram])
                 features = np.vstack([features,ext_features])
                 # labels = np.append(labels, fn.split('/')[1])
                 labels = np.append(labels, label)
@@ -76,8 +83,8 @@ def parse_predict_files(parent_dir,file_ext='*.ogg'):
     features = np.empty((0,193))
     filenames = []
     for fn in glob.glob(os.path.join(parent_dir, file_ext)):
-        mfccs, chroma, mel, contrast,tonnetz = extract_feature(fn)
-        ext_features = np.hstack([mfccs,chroma,mel,contrast,tonnetz])
+        mfccs, chroma, mel, contrast,fourier_tempogram = extract_feature(fn)
+        ext_features = np.hstack([mfccs,chroma,mel,contrast,fourier_tempogram])
         features = np.vstack([features,ext_features])
         filenames.append(fn)
         print("extract %s features done" % fn)
@@ -85,9 +92,9 @@ def parse_predict_files(parent_dir,file_ext='*.ogg'):
 
 def main():
     # Get features and labels
-    features, labels = parse_audio_files('/Users/miawang/PycharmProjects/Summer2021/test_audio1')
-    np.save('feat1.npy', features)
-    np.save('label2.npy', labels)
+    features, labels = parse_audio_files('/Users/miawang/PycharmProjects/Summer2021/test_audio_3')
+    np.save('feat_with_fourier_tempogram.npy', features)
+    np.save('label_with_fourier_tempogram.npy', labels)
 
     # Predict new
     features, filenames = parse_predict_files('predict')
