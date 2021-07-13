@@ -60,6 +60,8 @@ def extract_feature(file_name=None):
     fourier_tempograms = fourier_tempograms.real
     fourier_tempogram = np.mean(fourier_tempograms.T, axis=0)
 
+    # extracting mfccs, chroma, mel, contrast, fourier_tempogram
+    # if want to try other combinations, need to update the feature methods here
     return mfccs,chroma,mel,contrast,fourier_tempogram
 
 def parse_audio_files(parent_dir,file_ext='*.ogg'):
@@ -85,6 +87,7 @@ def parse_predict_files(parent_dir,file_ext='*.ogg'):
     filenames = []
     for fn in glob.glob(os.path.join(parent_dir, file_ext)):
         mfccs, chroma, mel, contrast,fourier_tempogram = extract_feature(fn)
+        # if want to try other combinations, need to update the feature methods here
         ext_features = np.hstack([mfccs,chroma,mel,contrast,fourier_tempogram])
         features = np.vstack([features,ext_features])
         filenames.append(fn)
