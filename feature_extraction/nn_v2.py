@@ -5,7 +5,7 @@ from tensorflow.keras.layers import Dense, Dropout, Activation
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.layers import Dense, Dropout
 
-# Prepare the data
+# load the features
 X =  np.load('feat_with_fourier_tempogram.npy')
 y =  np.load('label_with_fourier_tempogram.npy').ravel()
 
