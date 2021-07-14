@@ -5,7 +5,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import classification_report
 
-# Load data from numpy file
+# Load the features
 X =  np.load('feat_with_fourier_tempogram.npy')
 y =  np.load('label_with_fourier_tempogram.npy').ravel()
 
